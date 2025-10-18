@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uma Surpresa para Laura!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e91e63;
+            --secondary-color: #ffc107;
+            --background-color: #fff0f5;
+            --text-color: #333;
+            --font-heading: 'Dancing Script', cursive;
+            --font-body: 'Montserrat', sans-serif;
+            --puzzle-cut-color: rgba(0, 0, 0, 0.15); 
+            --puzzle-cut-shadow: rgba(255, 255, 255, 0.4);
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-body);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* Estilos gerais */
+        #curtain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #2c2c3b; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: top 1.5s ease-in-out; }
+        #curtain.open { top: -100%; }
+        #start-button { padding: 18px 35px; font-size: 1.3em; font-weight: 600; color: #fff; background: var(--primary-color); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 0 25px rgba(233, 30, 99, 0.8); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; text-align: center; }
+        .fade-in-section { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-in-section.visible { opacity: 1; transform: translateY(0); }
+        h1, h2 { font-family: var(--font-heading); }
+        h1 { font-size: 4em; color: var(--primary-color); }
+        h2 { font-size: 2.8em; color: #444; margin-top: 80px; }
+        .photo-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; align-items: center; }
+        .photo-card { border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .music-player { margin-top: 40px; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); display: inline-block; }
+        footer { margin-top: 80px; font-family: var(--font-heading); font-size: 2em; color: var(--primary-color); }
+
+        /* --- ESTILOS DO QUEBRA-CABEÇA --- */
+        .puzzle-piece-placeholder { display: block; margin: 40px auto; width: 120px; height: 120px; position: relative; }
+        #puzzle-board { position: relative; border: 3px dashed var(--primary-color); border-radius: 10px; background-color: rgba(255, 255, 255, 0.5); box-shadow: 0 0 20px rgba(0,0,0,0.1); margin: 30px auto; }
+        .puzzle-piece { position: absolute; background-image: url('laura.jpg'); box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; overflow: visible; transition: top 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55), transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        .pulsing { animation: pulse-glow 2.5s infinite ease-in-out; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 5px rgba(233, 30, 99, 0.5); } 50% { box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 20px rgba(233, 30, 99, 1); } 100% { box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 5px rgba(233, 30, 99, 0.5); } }
+        .puzzle-piece.is-flying { z-index: 9999; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .puzzle-piece.placed { box-shadow: none; z-index: 1; }
+        .puzzle-piece::before, .puzzle-piece::after { content: ''; position: absolute; background-color: transparent; }
+        .cut-left::before, .cut-right::before { left: -5px; top: 0; width: 10px; height: 100%; }
+        .cut-top::after, .cut-bottom::after { top: -5px; left: 0; width: 100%; height: 10px; }
+        .cut-right::before { box-shadow: inset -1px 0 1px var(--puzzle-cut-color), 1px 0 1px var(--puzzle-cut-shadow); border-radius: 0 50% 50% 0 / 0 35% 35% 0; }
+        .cut-left::before { box-shadow: inset 1px 0 1px var(--puzzle-cut-color), -1px 0 1px var(--puzzle-cut-shadow); border-radius: 50% 0 0 50% / 35% 0 0 35%; }
+        .cut-bottom::after { box-shadow: inset 0 -1px 1px var(--puzzle-cut-color), 0 1px 1px var(--puzzle-cut-shadow); border-radius: 0 0 50% 50% / 0 0 35% 35%; }
+        .cut-top::after { box-shadow: inset 0 1px 1px var(--puzzle-cut-color), 0 -1px 1px var(--puzzle-cut-shadow); border-radius: 50% 50% 0 0 / 35% 35% 0 0; }
+        #puzzle-complete-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: rgba(255, 255, 255, 0.95); padding: 30px 50px; border-radius: 20px; font-family: var(--font-heading); font-size: 2.5em; color: var(--primary-color); box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.5s ease-out; pointer-events: none; z-index: 1600; }
+        #puzzle-complete-message.show { transform: translate(-50%, -50%) scale(1); }
+
+        /* --- [NOVO] ESTILOS DA LINHA DO TEMPO --- */
+        .timeline-container {
+            width: 100%;
+            position: relative;
+            padding: 50px 0;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 4px;
+            background-color: var(--primary-color);
+            opacity: 0.3;
+        }
+        .timeline {
+            display: flex;
+            justify-content: space-around;
+            position: relative;
+        }
+        .timeline-event {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .timeline-point {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 4px solid var(--primary-color);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 10;
+        }
+        .timeline-point:hover {
+            transform: scale(1.2);
+        }
+        .timeline-content {
+            position: absolute;
+            bottom: 40px; /* Posição inicial (acima do ponto) */
+            width: 200px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+            pointer-events: none;
+            z-index: 20;
+        }
+        /* Alterna a posição para eventos pares */
+        .timeline-event:nth-child(even) .timeline-content {
+            top: 40px; 
+            bottom: auto;
+        }
+        .timeline-content.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .timeline-content h3 {
+            font-family: var(--font-heading);
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin: 0 0 5px 0;
+        }
+        .timeline-date {
+            font-size: 0.8em;
+            font-weight: 600;
+            color: #888;
+            margin: 0 0 10px 0;
+        }
+        .timeline-content p {
+            font-size: 0.9em;
+            line-height: 1.4;
+            margin: 0;
+        }
+        .timeline-content img {
+            width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="curtain">
+        <button id="start-button">Uma surpresa para a Laura...</button>
+    </div>
+
+    <div class="container">
+        <section class="gift-section fade-in-section">
+            <h1>Feliz Aniversário, Meu Amor!</h1>
+            <div class="puzzle-piece-placeholder"></div>
+            <p>Role a página para descobrir todas as peças escondidas!</p>
+            <div class="puzzle-piece-placeholder"></div>
+        </section>
+
+        <section class="puzzle-section fade-in-section">
+            <h2>Monte uma recordação especial...</h2>
+            <p>Encontre as 16 peças e clique nelas para montar o quebra-cabeça.</p>
+            <div id="puzzle-board"></div>
+            <div id="puzzle-complete-message">Foto completa! ❤️</div>
+        </section>
+        
+        <section class="timeline-section fade-in-section">
+            <h2>Nossa História...</h2>
+            <div class="timeline-container">
+                <div class="timeline">
+
+                    <div class="timeline-event">
+                        <div class="timeline-point"></div>
+                        <div class="timeline-content">
+                            <h3>O Início</h3>
+                            <span class="timeline-date">15 de Jan de 2022</span>
+                            <p>O dia em que nos conhecemos e tudo começou.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-event">
+                        <div class="timeline-point"></div>
+                        <div class="timeline-content">
+                            <h3>Primeira Viagem</h3>
+                            <span class="timeline-date">20 de Jul de 2022</span>
+                            <p>Nossa primeira aventura juntos, cheia de risadas e boas memórias.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-event">
+                        <div class="timeline-point"></div>
+                        <div class="timeline-content">
+                            <h3>Nosso Cantinho</h3>
+                            <span class="timeline-date">01 de Mar de 2023</span>
+                            <p>O dia em que começamos a construir nosso lar e nossa vida juntos.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-event">
+                        <div class="timeline-point"></div>
+                        <div class="timeline-content">
+                            <h3>Hoje!</h3>
+                            <span class="timeline-date">21 de Out de 2025</span>
+                            <p>Celebrando você e todas as alegrias que ainda vamos viver. Feliz aniversário, meu amor!</p>
+                        </div>
+                    </div>
+                    
+                    </div>
+            </div>
+        </section>
+        <p style="font-size: 1.2em; margin: 40px 0;">Cada peça representa um momento...</p>
+        <div class="puzzle-piece-placeholder"></div>
+        <p style="font-size: 1.2em; margin: 40px 0;">...um sorriso...</p>
+        <div class="puzzle-piece-placeholder"></div>
+        <p style="font-size: 1.2em; margin: 40px 0;">...uma história...</p>
+        <div class="puzzle-piece-placeholder"></div>
+
+        <section class="photo-gallery-section fade-in-section">
+            <h2>Nossos Momentos Inesquecíveis</h2>
+            <div class="puzzle-piece-placeholder"></div>
+            <div class="photo-gallery">
+                <div class="photo-card"><img src="casal.jpg" alt="Foto genérica 1"></div>
+                <div class="photo-card"><img src="https://images.pexels.com/photos/1589216/pexels-photo-1589216.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Foto genérica 2"></div>
+                <div class="photo-card"><img src="https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Foto genérica 3"></div>
+            </div>
+            <div class="puzzle-piece-placeholder"></div>
+            <div class="puzzle-piece-placeholder"></div>
+            <div class="puzzle-piece-placeholder"></div>
+        </section>
+        
+        <p style="font-size: 1.2em; margin: 40px 0;">...e juntas, elas formam algo lindo, assim como nós.</p>
+        <div class="puzzle-piece-placeholder"></div>
+        <div class="puzzle-piece-placeholder"></div>
+        <div class="puzzle-piece-placeholder"></div>
+        
+        <section class="music-player-section fade-in-section">
+            <div class="music-player">
+                 <audio id="birthday-song" src="https://cdn.pixabay.com/download/audio/2022/02/21/audio_a064124976.mp3" loop></audio>
+                 <p>Uma canção para celebrar seu dia!</p>
+                 <button id="play-btn">▶️ Tocar</button>
+                 <button id="pause-btn">⏸️ Pausar</button>
+            </div>
+            <div class="puzzle-piece-placeholder"></div>
+        </section>
+        
+        <footer>
+            <div class="puzzle-piece-placeholder"></div>
+            <div class="puzzle-piece-placeholder"></div>
+            <div class="puzzle-piece-placeholder"></div> 
+            <p>Com todo o amor do mundo, <br> Luiz Miguel</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Lógica de abertura da cortina
+            const startButton = document.getElementById('start-button');
+            const curtain = document.getElementById('curtain');
+            startButton.addEventListener('click', () => {
+                curtain.classList.add('open');
+                setTimeout(() => {
+                    curtain.style.display = 'none';
+                    initializePuzzle();
+                }, 1600);
+            });
+
+            // Lógica do player e scroll
+            const audio = document.getElementById('birthday-song');
+            const playBtn = document.getElementById('play-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            playBtn.addEventListener('click', () => audio.play());
+            pauseBtn.addEventListener('click', () => audio.pause());
+            const sections = document.querySelectorAll('.fade-in-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => observer.observe(section));
+
+            // --- [NOVO] LÓGICA DA LINHA DO TEMPO ---
+            const timelinePoints = document.querySelectorAll('.timeline-point');
+            timelinePoints.forEach(point => {
+                point.addEventListener('click', () => {
+                    const content = point.nextElementSibling;
+                    
+                    // Fecha qualquer outro que esteja aberto
+                    document.querySelectorAll('.timeline-content.visible').forEach(visibleContent => {
+                        if(visibleContent !== content) {
+                           visibleContent.classList.remove('visible');
+                        }
+                    });
+
+                    // Abre ou fecha o clicado
+                    content.classList.toggle('visible');
+                });
+            });
+
+
+            function initializePuzzle() {
+                const IMAGE_SRC = 'laura.jpg';
+                const PUZZLE_SIZE = 400;
+                const ROWS = 4;
+                const COLS = 4;
+
+                const board = document.getElementById('puzzle-board');
+                const placeholders = document.querySelectorAll('.puzzle-piece-placeholder');
+                
+                const pieceWidth = PUZZLE_SIZE / COLS;
+                const pieceHeight = PUZZLE_SIZE / ROWS;
+                let piecesPlaced = 0;
+                let pieceElements = [];
+
+                board.style.width = `${PUZZLE_SIZE}px`;
+                board.style.height = `${PUZZLE_SIZE}px`;
+
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        const piece = document.createElement('div');
+                        piece.classList.add('puzzle-piece');
+                        piece.classList.add('pulsing'); 
+                        
+                        piece.style.width = `${pieceWidth}px`;
+                        piece.style.height = `${pieceHeight}px`;
+                        piece.style.backgroundPosition = `-${c * pieceWidth}px -${r * pieceHeight}px`;
+                        piece.style.backgroundSize = `${PUZZLE_SIZE}px ${PUZZLE_SIZE}px`;
+                        
+                        if (r > 0) piece.classList.add('cut-top');
+                        if (r < ROWS - 1) piece.classList.add('cut-bottom');
+                        if (c > 0) piece.classList.add('cut-left');
+                        if (c < COLS - 1) piece.classList.add('cut-right');
+
+                        piece.dataset.correctTop = r * pieceHeight;
+                        piece.dataset.correctLeft = c * pieceWidth;
+                        
+                        pieceElements.push(piece);
+                    }
+                }
+                
+                if (placeholders.length < pieceElements.length) {
+                    console.warn(`Aviso: Existem ${pieceElements.length} peças, mas apenas ${placeholders.length} esconderijos. Algumas peças não aparecerão.`);
+                }
+                
+                pieceElements.sort(() => Math.random() - 0.5);
+                placeholders.forEach((placeholder, index) => {
+                    if (pieceElements[index]) {
+                        const piece = pieceElements[index];
+                        placeholder.style.width = `${pieceWidth}px`;
+                        placeholder.style.height = `${pieceHeight}px`;
+                        placeholder.appendChild(piece);
+                        
+                        piece.style.top = '0px';
+                        piece.style.left = '0px';
+                        piece.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+                    }
+                });
+
+                pieceElements.forEach(piece => {
+                    piece.addEventListener('click', () => {
+                        piece.classList.remove('pulsing'); 
+
+                        const boardRect = board.getBoundingClientRect();
+                        const placeholderRect = piece.parentElement.getBoundingClientRect();
+                        const finalTop = boardRect.top + window.scrollY + parseFloat(piece.dataset.correctTop);
+                        const finalLeft = boardRect.left + window.scrollX + parseFloat(piece.dataset.correctLeft);
+
+                        document.body.appendChild(piece);
+                        piece.style.position = 'fixed';
+                        piece.style.top = `${placeholderRect.top}px`;
+                        piece.style.left = `${placeholderRect.left}px`;
+
+                        setTimeout(() => {
+                            piece.classList.add('is-flying');
+                            piece.style.top = `${finalTop - window.scrollY}px`;
+                            piece.style.left = `${finalLeft - window.scrollX}px`;
+                            piece.style.transform = 'rotate(360deg) scale(1)';
+                        }, 20);
+
+                        setTimeout(() => {
+                            piece.classList.remove('is-flying');
+                            piece.classList.add('placed');
+                            board.appendChild(piece);
+                            
+                            piece.style.position = 'absolute';
+                            piece.style.top = `${piece.dataset.correctTop}px`;
+                            piece.style.left = `${piece.dataset.correctLeft}px`;
+                            piece.style.transform = 'none';
+                        }, 1200);
+
+                        piece.style.pointerEvents = 'none';
+                        piecesPlaced++;
+                        if (piecesPlaced === ROWS * COLS) {
+                            setTimeout(() => {
+                                document.getElementById('puzzle-complete-message').classList.add('show');
+                            }, 1300);
+                        }
+                    }, { once: true });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
