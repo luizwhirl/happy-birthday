@@ -62,94 +62,93 @@
         #puzzle-complete-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: rgba(255, 255, 255, 0.95); padding: 30px 50px; border-radius: 20px; font-family: var(--font-heading); font-size: 2.5em; color: var(--primary-color); box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.5s ease-out; pointer-events: none; z-index: 1600; }
         #puzzle-complete-message.show { transform: translate(-50%, -50%) scale(1); }
 
-        /* --- [NOVO] ESTILOS DA LINHA DO TEMPO --- */
-        .timeline-container {
-            width: 100%;
-            position: relative;
-            padding: 50px 0;
+        /* --- ESTILOS DA LINHA DO TEMPO --- */
+        .timeline-container { width: 100%; position: relative; padding: 50px 0; }
+        .timeline-container::before { content: ''; position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 100%; height: 4px; background-color: var(--primary-color); opacity: 0.3; }
+        .timeline { display: flex; justify-content: space-around; position: relative; }
+        .timeline-event { position: relative; display: flex; flex-direction: column; align-items: center; }
+        .timeline-point { width: 20px; height: 20px; border-radius: 50%; background-color: #fff; border: 4px solid var(--primary-color); cursor: pointer; transition: transform 0.3s ease; z-index: 10; }
+        .timeline-point:hover { transform: scale(1.2); }
+        .timeline-content { position: absolute; bottom: 40px; width: 200px; background-color: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.4s ease; pointer-events: none; z-index: 20; }
+        .timeline-event:nth-child(even) .timeline-content { top: 40px; bottom: auto; }
+        .timeline-content.visible { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+        .timeline-content h3 { font-family: var(--font-heading); color: var(--primary-color); font-size: 1.8em; margin: 0 0 5px 0; }
+        .timeline-date { font-size: 0.8em; font-weight: 600; color: #888; margin: 0 0 10px 0; }
+        .timeline-content p { font-size: 0.9em; line-height: 1.4; margin: 0; }
+        .timeline-content img { width: 100%; border-radius: 5px; margin-top: 10px; }
+        
+        #celebration-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: 2500; }
+        .confetti { position: absolute; width: 10px; height: 10px; background-color: var(--primary-color); opacity: 0.7; animation: fall 5s linear infinite; }
+        .confetti:nth-child(2n) { background-color: var(--secondary-color); }
+        .confetti:nth-child(3n) { background-color: #4caf50; }
+        @keyframes fall {
+            from { top: -20px; transform: rotate(0deg); }
+            to { top: 110%; transform: rotate(720deg); }
         }
-        .timeline-container::before {
-            content: '';
-            position: absolute;
-            top: 50%;
+        .balloon { position: absolute; width: 70px; height: 90px; background-color: rgba(233, 30, 99, 0.7); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; animation: rise 8s ease-in infinite; }
+        .balloon::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 2px; height: 20px; background: rgba(0,0,0,0.2); }
+        .balloon:nth-child(2n) { background-color: rgba(255, 193, 7, 0.7); }
+        @keyframes rise {
+            from { bottom: -100px; transform: translateX(0); }
+            to { bottom: 110%; transform: translateX(100px) rotate(15deg); }
+        }
+
+        #slideshow-overlay {
+            position: fixed;
+            top: 0;
             left: 0;
-            transform: translateY(-50%);
             width: 100%;
-            height: 4px;
-            background-color: var(--primary-color);
-            opacity: 0.3;
-        }
-        .timeline {
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
             display: flex;
-            justify-content: space-around;
-            position: relative;
-        }
-        .timeline-event {
-            position: relative;
-            display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-        }
-        .timeline-point {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #fff;
-            border: 4px solid var(--primary-color);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            z-index: 10;
-        }
-        .timeline-point:hover {
-            transform: scale(1.2);
-        }
-        .timeline-content {
-            position: absolute;
-            bottom: 40px; /* Posição inicial (acima do ponto) */
-            width: 200px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex-direction: column;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.4s ease;
-            pointer-events: none;
-            z-index: 20;
+            transition: opacity 0.5s ease;
         }
-        /* Alterna a posição para eventos pares */
-        .timeline-event:nth-child(even) .timeline-content {
-            top: 40px; 
-            bottom: auto;
-        }
-        .timeline-content.visible {
+        #slideshow-overlay.visible {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
-            pointer-events: auto;
         }
-        .timeline-content h3 {
-            font-family: var(--font-heading);
-            color: var(--primary-color);
-            font-size: 1.8em;
-            margin: 0 0 5px 0;
+        #slideshow-image {
+            max-width: 85vw;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
         }
-        .timeline-date {
-            font-size: 0.8em;
-            font-weight: 600;
-            color: #888;
-            margin: 0 0 10px 0;
+        .slideshow-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 2em;
+            cursor: pointer;
+            transition: background 0.3s;
         }
-        .timeline-content p {
-            font-size: 0.9em;
-            line-height: 1.4;
-            margin: 0;
-        }
-        .timeline-content img {
-            width: 100%;
-            border-radius: 5px;
-            margin-top: 10px;
+        .slideshow-nav:hover { background: rgba(255, 255, 255, 0.4); }
+        #prev-slide { left: 20px; }
+        #next-slide { right: 20px; }
+        #close-slideshow {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            line-height: 40px;
         }
 
     </style>
@@ -171,42 +170,39 @@
         <section class="puzzle-section fade-in-section">
             <h2>Monte uma recordação especial...</h2>
             <p>Encontre as 16 peças e clique nelas para montar o quebra-cabeça.</p>
-            <div id="puzzle-board"></div>
-            <div id="puzzle-complete-message">Foto completa! ❤️</div>
+            <div id="puzzle-board">
+                 <div id="puzzle-complete-message">Foto completa! ❤️<br><small style="font-size: 0.5em;">Clique aqui para mais uma surpresa!</small></div>
+            </div>
         </section>
         
         <section class="timeline-section fade-in-section">
             <h2>Nossa História...</h2>
             <div class="timeline-container">
                 <div class="timeline">
-
                     <div class="timeline-event">
                         <div class="timeline-point"></div>
                         <div class="timeline-content">
                             <h3>O Início</h3>
-                            <span class="timeline-date">15 de Jan de 2022</span>
-                            <p>O dia em que nos conhecemos e tudo começou.</p>
+                            <span class="timeline-date">15 de Jan de 2024</span>
+                            <p>Houve então um dia, em que nós nos esbarramos sem qualquer pretensão.</p>
                         </div>
                     </div>
-
                     <div class="timeline-event">
                         <div class="timeline-point"></div>
                         <div class="timeline-content">
-                            <h3>Primeira Viagem</h3>
-                            <span class="timeline-date">20 de Jul de 2022</span>
-                            <p>Nossa primeira aventura juntos, cheia de risadas e boas memórias.</p>
+                            <h3>Primeira Vista</h3>
+                            <span class="timeline-date">27 Dez de 2024</span>
+                            <p>Nossa primeira vez se vendo. Apesar da vergonha, nos demos muito bem (e apesar da moto quebrada tambem).</p>
                         </div>
                     </div>
-
                     <div class="timeline-event">
                         <div class="timeline-point"></div>
                         <div class="timeline-content">
-                            <h3>Nosso Cantinho</h3>
-                            <span class="timeline-date">01 de Mar de 2023</span>
-                            <p>O dia em que começamos a construir nosso lar e nossa vida juntos.</p>
+                            <h3>Seu pedido</h3>
+                            <span class="timeline-date">13 de Mai de 2025</span>
+                            <p>O dia em que oficializamos que queríamos construir juntos a nossa vida.</p>
                         </div>
                     </div>
-                    
                     <div class="timeline-event">
                         <div class="timeline-point"></div>
                         <div class="timeline-content">
@@ -215,7 +211,6 @@
                             <p>Celebrando você e todas as alegrias que ainda vamos viver. Feliz aniversário, meu amor!</p>
                         </div>
                     </div>
-                    
                     </div>
             </div>
         </section>
@@ -262,6 +257,17 @@
         </footer>
     </div>
     
+    <div id="celebration-container"></div>
+
+    <div id="slideshow-overlay">
+        <img id="slideshow-image" src="" alt="Nossos Momentos">
+        <button id="prev-slide" class="slideshow-nav">‹</button>
+        <button id="next-slide" class="slideshow-nav">›</button>
+        <button id="close-slideshow">×</button>
+    </div>
+
+    <audio id="slideshow-song" src="happy.mp3" loop></audio>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -290,23 +296,87 @@
             }, { threshold: 0.1 });
             sections.forEach(section => observer.observe(section));
 
-            // --- [NOVO] LÓGICA DA LINHA DO TEMPO ---
             const timelinePoints = document.querySelectorAll('.timeline-point');
             timelinePoints.forEach(point => {
                 point.addEventListener('click', () => {
                     const content = point.nextElementSibling;
-                    
-                    // Fecha qualquer outro que esteja aberto
                     document.querySelectorAll('.timeline-content.visible').forEach(visibleContent => {
                         if(visibleContent !== content) {
-                           visibleContent.classList.remove('visible');
+                            visibleContent.classList.remove('visible');
                         }
                     });
-
-                    // Abre ou fecha o clicado
                     content.classList.toggle('visible');
                 });
             });
+
+            const celebrationContainer = document.getElementById('celebration-container');
+            const slideshowOverlay = document.getElementById('slideshow-overlay');
+            const slideshowImage = document.getElementById('slideshow-image');
+            const slideshowSong = document.getElementById('slideshow-song');
+            const closeSlideshowBtn = document.getElementById('close-slideshow');
+            const nextSlideBtn = document.getElementById('next-slide');
+            const prevSlideBtn = document.getElementById('prev-slide');
+
+            const slideImages = [
+                'https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3764014/pexels-photo-3764014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            ];
+            let currentImageIndex = 0;
+
+            function startCelebration() {
+                // Confetes
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.left = `${Math.random() * 100}vw`;
+                    confetti.style.animationDelay = `${Math.random() * 5}s`;
+                    confetti.style.animationDuration = `${3 + Math.random() * 2}s`;
+                    celebrationContainer.appendChild(confetti);
+                }
+                // Balões
+                for (let i = 0; i < 10; i++) {
+                    const balloon = document.createElement('div');
+                    balloon.classList.add('balloon');
+                    balloon.style.left = `${Math.random() * 90}vw`;
+                    balloon.style.animationDelay = `${Math.random() * 8}s`;
+                    balloon.style.animationDuration = `${6 + Math.random() * 4}s`;
+                    celebrationContainer.appendChild(balloon);
+                }
+            }
+            
+            function showSlide(index) {
+                slideshowImage.src = slideImages[index];
+            }
+
+            function openSlideshow() {
+                audio.pause(); 
+                slideshowOverlay.classList.add('visible');
+                currentImageIndex = 0;
+                showSlide(currentImageIndex);
+                slideshowSong.currentTime = 0;
+                slideshowSong.play();
+            }
+
+            function closeSlideshow() {
+                slideshowOverlay.classList.remove('visible');
+                slideshowSong.pause();
+            }
+            
+            function nextSlide() {
+                currentImageIndex = (currentImageIndex + 1) % slideImages.length;
+                showSlide(currentImageIndex);
+            }
+
+            function prevSlide() {
+                currentImageIndex = (currentImageIndex - 1 + slideImages.length) % slideImages.length;
+                showSlide(currentImageIndex);
+            }
+
+            closeSlideshowBtn.addEventListener('click', closeSlideshow);
+            nextSlideBtn.addEventListener('click', nextSlide);
+            prevSlideBtn.addEventListener('click', prevSlide);
 
 
             function initializePuzzle() {
@@ -404,6 +474,11 @@
                         if (piecesPlaced === ROWS * COLS) {
                             setTimeout(() => {
                                 document.getElementById('puzzle-complete-message').classList.add('show');
+                                
+                                startCelebration();
+                                board.style.cursor = 'pointer';
+                                board.addEventListener('click', openSlideshow, { once: true });
+
                             }, 1300);
                         }
                     }, { once: true });
