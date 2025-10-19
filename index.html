@@ -9,12 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #f06292; /* Rosa mais suave */
+            --primary-color: #f06292;
             --primary-glow: rgba(240, 98, 146, 0.7);
-            --secondary-color: #ffd54f; /* Amarelo/Dourado suave */
-            --background-start: #fce4ec; /* Rosa bem clarinho */
-            --background-end: #f3e5f5;   /* Lilás bem clarinho */
-            --text-color: #4e3440; /* Cor de texto mais escura e quente */
+            --secondary-color: #ffd54f;
+            --background-start: #fce4ec;
+            --background-end: #f3e5f5;
+            --text-color: #4e3440;
             --font-heading: 'Dancing Script', cursive;
             --font-body: 'Montserrat', sans-serif;
             --shadow-soft: rgba(78, 52, 64, 0.1);
@@ -33,7 +33,6 @@
             overflow-x: hidden;
         }
 
-        /* [NOVO] Fundo de partículas animado */
         #particle-canvas {
             position: fixed;
             top: 0;
@@ -43,7 +42,6 @@
             z-index: -1;
         }
 
-        /* Estilos gerais */
         #curtain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #3a2e4a; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: top 1.5s cubic-bezier(0.86, 0, 0.07, 1); }
         #curtain.open { top: -100%; }
         #start-button { padding: 18px 40px; font-size: 1.3em; font-weight: 600; color: #fff; background: linear-gradient(45deg, var(--primary-color), #ff8a80); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 0 35px var(--primary-glow); animation: pulse-glow 2.5s infinite; transition: transform 0.3s ease; }
@@ -62,21 +60,32 @@
         .photo-card:hover { transform: scale(1.05) translateY(-10px); box-shadow: 0 20px 40px var(--shadow-medium); }
         .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
         
-        .music-player { margin-top: 40px; background: rgba(255, 255, 255, 0.6); padding: 25px 35px; border-radius: 20px; box-shadow: 0 8px 32px 0 var(--shadow-soft); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.18); display: inline-block; }
-        .music-player button { background: transparent; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 10px 20px; margin: 0 5px; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; font-weight: 600; }
-        .music-player button:hover { background: var(--primary-color); color: #fff; }
+        .music-player {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 var(--shadow-soft);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: inline-block;
+            padding: 20px;
+        }
 
+        .music-player iframe {
+            border-radius: 12px;
+            border: none;
+        }
+        
         footer { margin-top: 100px; font-family: var(--font-heading); font-size: 2.2em; color: var(--primary-color); opacity: 0.8; }
 
-        /* --- ESTILOS DO QUEBRA-CABEÇA --- */
         .puzzle-piece-placeholder { display: block; margin: 40px auto; width: 120px; height: 120px; position: relative; }
-        #puzzle-board { position: relative; border-radius: 15px; background-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 25px var(--shadow-soft), inset 0 0 10px rgba(255,255,255,0.7); margin: 30px auto; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        #puzzle-board { position: relative; border-radius: 15px; background-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 25px var(--shadow-soft), inset 0 0 10px rgba(255,255,255,0.7); margin: 30px auto 0; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
         .puzzle-piece { position: absolute; background-image: url('laura.jpg'); filter: drop-shadow(0 5px 15px var(--shadow-medium)); cursor: pointer; overflow: visible; transition: top 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55), transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
         .pulsing { animation: pulse-glow 2.5s infinite ease-in-out; }
         @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 5px 15px var(--shadow-medium)) drop-shadow(0 0 5px var(--primary-glow)); } 50% { filter: drop-shadow(0 8px 25px var(--shadow-medium)) drop-shadow(0 0 20px var(--primary-glow)); } }
         .puzzle-piece.is-flying { z-index: 9999; filter: drop-shadow(0 20px 40px var(--shadow-medium)); }
         .puzzle-piece.placed { filter: none; z-index: 1; }
-        /* ... (mantidos os estilos de corte das peças) ... */
         .puzzle-piece::before, .puzzle-piece::after { content: ''; position: absolute; background-color: transparent; }
         .cut-left::before, .cut-right::before { left: -5px; top: 0; width: 10px; height: 100%; }
         .cut-top::after, .cut-bottom::after { top: -5px; left: 0; width: 100%; height: 10px; }
@@ -84,11 +93,32 @@
         .cut-left::before { box-shadow: inset 1px 0 1px var(--puzzle-cut-color), -1px 0 1px var(--puzzle-cut-shadow); border-radius: 50% 0 0 50% / 35% 0 0 35%; }
         .cut-bottom::after { box-shadow: inset 0 -1px 1px var(--puzzle-cut-color), 0 1px 1px var(--puzzle-cut-shadow); border-radius: 0 0 50% 50% / 0 0 35% 35%; }
         .cut-top::after { box-shadow: inset 0 1px 1px var(--puzzle-cut-color), 0 -1px 1px var(--puzzle-cut-shadow); border-radius: 50% 50% 0 0 / 35% 35% 0 0; }
-        #puzzle-complete-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: rgba(255, 255, 255, 0.9); padding: 30px 50px; border-radius: 20px; font-family: var(--font-heading); font-size: 2.5em; color: var(--primary-color); box-shadow: 0 10px 30px var(--shadow-medium); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: none; z-index: 1600; text-align: center; }
-        #puzzle-complete-message.show { transform: translate(-50%, -50%) scale(1); }
-        #puzzle-complete-message small { font-size: 0.5em; font-family: var(--font-body); font-weight: 600; opacity: 0.8; }
+        
+        #puzzle-complete-message {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            padding: 0 40px;
+            border-radius: 20px;
+            font-family: var(--font-heading);
+            font-size: 2.5em;
+            color: var(--primary-color);
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            text-align: center;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            margin: 0 auto;
+            transition: opacity 0.6s ease, max-height 0.8s ease, padding 0.6s ease, margin-bottom 0.6s ease;
+        }
 
-        /* --- ESTILOS DA LINHA DO TEMPO --- */
+        #puzzle-complete-message.show {
+            opacity: 1;
+            max-height: 200px;
+            padding: 20px 40px;
+            margin-bottom: 20px;
+        }
+
+        #puzzle-complete-message small { font-size: 0.5em; font-family: var(--font-body); font-weight: 600; opacity: 0.8; }
         .timeline-container { width: 100%; position: relative; padding: 50px 0; }
         .timeline-container::before { content: ''; position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 100%; height: 4px; background: linear-gradient(90deg, transparent, var(--primary-color), transparent); opacity: 0.4; }
         .timeline { display: flex; justify-content: space-around; position: relative; }
@@ -101,8 +131,11 @@
         .timeline-content h3 { font-family: var(--font-heading); color: var(--primary-color); font-size: 2em; margin: 0 0 5px 0; }
         .timeline-date { font-size: 0.8em; font-weight: 600; color: #888; margin: 0 0 10px 0; }
         .timeline-content p { font-size: 0.95em; line-height: 1.5; margin: 0; }
-
-        /* --- ESTILOS DA CELEBRAÇÃO (CONFETES E BALÕES) --- */
+        
+        #dancing-animals-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; pointer-events: none; z-index: 2400; }
+        .dancing-animal { position: absolute; width: 120px; height: auto; animation: float-up 15s linear infinite; }
+        @keyframes float-up { 0% { bottom: -150px; opacity: 1; transform: translateX(0) scale(1) rotate(0deg); } 100% { bottom: 110vh; opacity: 0.5; transform: translateX(var(--translateX)) scale(1.2) rotate(360deg); } }
+        
         #celebration-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: 2500; }
         .confetti { position: absolute; width: 10px; height: 10px; background-color: var(--primary-color); opacity: 0.9; animation: fall 5s linear infinite; border-radius: 50%; }
         .confetti:nth-child(2n) { background-color: var(--secondary-color); }
@@ -112,8 +145,6 @@
         .balloon::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 2px; height: 20px; background: rgba(0,0,0,0.2); }
         .balloon:nth-child(2n) { background-color: rgba(255, 213, 79, 0.7); }
         @keyframes rise { from { bottom: -100px; transform: translateX(0); } to { bottom: 110%; transform: translateX(100px) rotate(15deg); } }
-
-        /* --- ESTILOS DO SLIDESHOW --- */
         #slideshow-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(20, 12, 25, 0.97); z-index: 3000; display: flex; justify-content: center; align-items: center; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity 0.5s ease; backdrop-filter: blur(5px); }
         #slideshow-overlay.visible { opacity: 1; visibility: visible; }
         #slideshow-image { max-width: 85vw; max-height: 80vh; border-radius: 10px; box-shadow: 0 0 60px rgba(255, 255, 255, 0.15); object-fit: contain; }
@@ -144,9 +175,8 @@
         <section class="puzzle-section fade-in-section">
             <h2>Monte uma recordação...</h2>
             <p>Encontre as 16 peças e clique nelas para montar o quebra-cabeça.</p>
-            <div id="puzzle-board">
-                 <div id="puzzle-complete-message">Foto completa! ❤️<br><small>Clique aqui para mais uma surpresa!</small></div>
-            </div>
+            <div id="puzzle-complete-message">Foto completa! ❤️<br><small>Clique na foto para mais uma surpresa!</small></div>
+            <div id="puzzle-board"></div>
         </section>
         
         <section class="timeline-section fade-in-section">
@@ -187,11 +217,9 @@
         <div class="puzzle-piece-placeholder"></div>
         
         <section class="music-player-section fade-in-section">
+            <h2>Uma canção para celebrar...</h2>
             <div class="music-player">
-                 <audio id="birthday-song" src="https://cdn.pixabay.com/download/audio/2022/02/21/audio_a064124976.mp3" loop></audio>
-                 <p>Uma canção para celebrar seu dia!</p>
-                 <button id="play-btn">▶ Tocar</button>
-                 <button id="pause-btn">⏸ Pausar</button>
+                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2L0YYqVXQmE085cEQ77Fav?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
             <div class="puzzle-piece-placeholder"></div>
         </section>
@@ -204,6 +232,7 @@
         </footer>
     </div>
     
+    <div id="dancing-animals-container"></div>
     <div id="celebration-container"></div>
     <div id="slideshow-overlay">
         <img id="slideshow-image" src="" alt="Nossos Momentos">
@@ -216,63 +245,30 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- [NOVO] LÓGICA DO FUNDO DE PARTÍCULAS ---
             const canvas = document.getElementById('particle-canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             let particlesArray = [];
-
             class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 2 + 0.5;
-                    this.speedX = Math.random() * 0.4 - 0.2;
-                    this.speedY = Math.random() * 0.4 - 0.2;
-                }
-                update() {
-                    if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-                    if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                }
-                draw() {
-                    ctx.fillStyle = 'rgba(240, 98, 146, 0.5)';
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
+                constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 0.5; this.speedX = Math.random() * 0.4 - 0.2; this.speedY = Math.random() * 0.4 - 0.2; }
+                update() { if (this.x > canvas.width || this.x < 0) this.speedX *= -1; if (this.y > canvas.height || this.y < 0) this.speedY *= -1; this.x += this.speedX; this.y += this.speedY; }
+                draw() { ctx.fillStyle = 'rgba(240, 98, 146, 0.5)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
             }
-
             function initParticles() {
                 particlesArray = [];
                 let numberOfParticles = (canvas.height * canvas.width) / 9000;
-                for (let i = 0; i < numberOfParticles; i++) {
-                    particlesArray.push(new Particle());
-                }
+                for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new Particle()); }
             }
-
             function animateParticles() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let i = 0; i < particlesArray.length; i++) {
-                    particlesArray[i].update();
-                    particlesArray[i].draw();
-                }
+                for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); }
                 requestAnimationFrame(animateParticles);
             }
-
             initParticles();
             animateParticles();
+            window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); });
 
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                initParticles();
-            });
-
-
-            // Lógica de abertura da cortina
             const startButton = document.getElementById('start-button');
             const curtain = document.getElementById('curtain');
             startButton.addEventListener('click', () => {
@@ -283,12 +279,6 @@
                 }, 1600);
             });
 
-            // Lógica do player e scroll
-            const audio = document.getElementById('birthday-song');
-            const playBtn = document.getElementById('play-btn');
-            const pauseBtn = document.getElementById('pause-btn');
-            playBtn.addEventListener('click', () => audio.play());
-            pauseBtn.addEventListener('click', () => audio.pause());
             const sections = document.querySelectorAll('.fade-in-section');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -300,7 +290,6 @@
             }, { threshold: 0.15 });
             sections.forEach(section => observer.observe(section));
 
-            // --- LÓGICA DA LINHA DO TEMPO ---
             const timelinePoints = document.querySelectorAll('.timeline-point');
             timelinePoints.forEach(point => {
                 point.addEventListener('click', () => {
@@ -314,7 +303,6 @@
                 });
             });
 
-            // --- LÓGICA DA CELEBRAÇÃO E SLIDESHOW ---
             const celebrationContainer = document.getElementById('celebration-container');
             const slideshowOverlay = document.getElementById('slideshow-overlay');
             const slideshowImage = document.getElementById('slideshow-image');
@@ -322,13 +310,7 @@
             const closeSlideshowBtn = document.getElementById('close-slideshow');
             const nextSlideBtn = document.getElementById('next-slide');
             const prevSlideBtn = document.getElementById('prev-slide');
-
-            const slideImages = [
-                'https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                'https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                'https://images.pexels.com/photos/3764014/pexels-photo-3764014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-            ];
+            const slideImages = ['https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 'https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 'https://images.pexels.com/photos/3764014/pexels-photo-3764014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'];
             let currentImageIndex = 0;
 
             function startCelebration() {
@@ -350,6 +332,35 @@
                 }
             }
             
+            function showDancingAnimals() {
+                const animalContainer = document.getElementById('dancing-animals-container');
+                const animalGifs = [
+                    'https://media.tenor.com/JhVlbsQoCboAAAAj/cute-dancing.gif',
+                    'https://img1.picmix.com/output/stamp/normal/0/4/8/4/314840_16bfd.gif',
+                    'https://media2.giphy.com/media/HoMgLVtz7JmY1U8zHb/giphy.gif?cid=6c09b952fvr8e3lyexdpytmmm6e30nvwabchbidxqj5qdgit&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s',
+                    'https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyaDRsOTBvNmg3NTB3YmJicjhjMmd3eGtkZGk2c3FhYjZrOHprY3llcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/5QRtBXibb3uOzdRQ8I/giphy.gif',
+                    'https://cdn11.bigcommerce.com/s-o3ewkiqyx3/images/stencil/1280x1280/products/10033/20938/cd10681-penguins-dancing-bump-lenticular-motion-birthday-card__84101.1656462009.gif?c=1',
+                    'https://cdn.pixabay.com/animation/2024/01/01/07/32/07-32-56-254_512.gif',
+                    'https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUybHoyNXY3amFzaGgzMXN6ZXM5bnIzbG5tbG5kOW9qaGRwbXFpb2dreiZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/UW1PqDNlTyNTVfiq3j/200.gif',
+                    'https://img1.picmix.com/output/stamp/normal/2/0/6/0/2730602_a0dc7.gif'
+                ];
+                const animalCount = 8;
+
+                for (let i = 0; i < animalCount; i++) {
+                    const animal = document.createElement('img');
+                    animal.src = animalGifs[i % animalGifs.length];
+                    animal.classList.add('dancing-animal');
+                    animal.style.left = `${Math.random() * 90}vw`;
+                    const duration = 10 + Math.random() * 10;
+                    const delay = Math.random() * 5;
+                    const translateX = (Math.random() - 0.5) * 200;
+                    animal.style.setProperty('--translateX', `${translateX}px`);
+                    animal.style.animationDuration = `${duration}s`;
+                    animal.style.animationDelay = `${delay}s`;
+                    animalContainer.appendChild(animal);
+                }
+            }
+
             function showSlide(index) {
                 slideshowImage.style.opacity = 0;
                 setTimeout(() => {
@@ -359,7 +370,6 @@
             }
 
             function openSlideshow() {
-                audio.pause(); 
                 slideshowOverlay.classList.add('visible');
                 currentImageIndex = 0;
                 showSlide(currentImageIndex);
@@ -400,81 +410,84 @@
                 board.style.width = `${PUZZLE_SIZE}px`;
                 board.style.height = `${PUZZLE_SIZE}px`;
 
-                for (let r = 0; r < ROWS; r++) {
-                    for (let c = 0; c < COLS; c++) {
-                        const piece = document.createElement('div');
-                        piece.classList.add('puzzle-piece', 'pulsing');
-                        piece.style.width = `${pieceWidth}px`;
-                        piece.style.height = `${pieceHeight}px`;
-                        piece.style.backgroundPosition = `-${c * pieceWidth}px -${r * pieceHeight}px`;
-                        piece.style.backgroundSize = `${PUZZLE_SIZE}px ${PUZZLE_SIZE}px`;
-                        if (r > 0) piece.classList.add('cut-top');
-                        if (r < ROWS - 1) piece.classList.add('cut-bottom');
-                        if (c > 0) piece.classList.add('cut-left');
-                        if (c < COLS - 1) piece.classList.add('cut-right');
-                        piece.dataset.correctTop = r * pieceHeight;
-                        piece.dataset.correctLeft = c * pieceWidth;
-                        pieceElements.push(piece);
-                    }
+                for (let r = 0; r < ROWS; r++) { 
+                    for (let c = 0; c < COLS; c++) { 
+                        const piece = document.createElement('div'); 
+                        piece.classList.add('puzzle-piece', 'pulsing'); 
+                        piece.style.width = `${pieceWidth}px`; 
+                        piece.style.height = `${pieceHeight}px`; 
+                        piece.style.backgroundPosition = `-${c * pieceWidth}px -${r * pieceHeight}px`; 
+                        piece.style.backgroundSize = `${PUZZLE_SIZE}px ${PUZZLE_SIZE}px`; 
+                        if (r > 0) piece.classList.add('cut-top'); 
+                        if (r < ROWS - 1) piece.classList.add('cut-bottom'); 
+                        if (c > 0) piece.classList.add('cut-left'); 
+                        if (c < COLS - 1) piece.classList.add('cut-right'); 
+                        piece.dataset.correctTop = r * pieceHeight; 
+                        piece.dataset.correctLeft = c * pieceWidth; 
+                        pieceElements.push(piece); 
+                    } 
                 }
                 
-                if (placeholders.length < pieceElements.length) {
-                    console.warn(`Aviso: Existem ${pieceElements.length} peças, mas apenas ${placeholders.length} esconderijos. Algumas peças não aparecerão.`);
+                if (placeholders.length < pieceElements.length) { 
+                    console.warn(`Aviso: Existem ${pieceElements.length} peças, mas apenas ${placeholders.length} esconderijos. Algumas peças não aparecerão.`); 
                 }
                 
                 pieceElements.sort(() => Math.random() - 0.5);
-                placeholders.forEach((placeholder, index) => {
-                    if (pieceElements[index]) {
-                        const piece = pieceElements[index];
-                        placeholder.style.width = `${pieceWidth}px`;
-                        placeholder.style.height = `${pieceHeight}px`;
-                        placeholder.appendChild(piece);
-                        piece.style.top = '0px';
-                        piece.style.left = '0px';
-                        piece.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
-                    }
+                
+                placeholders.forEach((placeholder, index) => { 
+                    if (pieceElements[index]) { 
+                        const piece = pieceElements[index]; 
+                        placeholder.style.width = `${pieceWidth}px`; 
+                        placeholder.style.height = `${pieceHeight}px`; 
+                        placeholder.appendChild(piece); 
+                        piece.style.top = '0px'; 
+                        piece.style.left = '0px'; 
+                        piece.style.transform = `rotate(${Math.random() * 40 - 20}deg)`; 
+                    } 
                 });
-
-                pieceElements.forEach(piece => {
-                    piece.addEventListener('click', () => {
+                
+                pieceElements.forEach(piece => { 
+                    piece.addEventListener('click', () => { 
                         piece.classList.remove('pulsing'); 
-                        const boardRect = board.getBoundingClientRect();
-                        const placeholderRect = piece.parentElement.getBoundingClientRect();
-                        const finalTop = boardRect.top + window.scrollY + parseFloat(piece.dataset.correctTop);
-                        const finalLeft = boardRect.left + window.scrollX + parseFloat(piece.dataset.correctLeft);
-                        document.body.appendChild(piece);
-                        piece.style.position = 'fixed';
-                        piece.style.top = `${placeholderRect.top}px`;
-                        piece.style.left = `${placeholderRect.left}px`;
-
-                        setTimeout(() => {
-                            piece.classList.add('is-flying');
-                            piece.style.top = `${finalTop - window.scrollY}px`;
-                            piece.style.left = `${finalLeft - window.scrollX}px`;
-                            piece.style.transform = 'rotate(360deg) scale(1)';
-                        }, 20);
-
-                        setTimeout(() => {
-                            piece.classList.remove('is-flying');
-                            piece.classList.add('placed');
-                            board.appendChild(piece);
-                            piece.style.position = 'absolute';
-                            piece.style.top = `${piece.dataset.correctTop}px`;
-                            piece.style.left = `${piece.dataset.correctLeft}px`;
-                            piece.style.transform = 'none';
-                        }, 1200);
-
-                        piece.style.pointerEvents = 'none';
-                        piecesPlaced++;
-                        if (piecesPlaced === ROWS * COLS) {
-                            setTimeout(() => {
-                                document.getElementById('puzzle-complete-message').classList.add('show');
+                        const boardRect = board.getBoundingClientRect(); 
+                        const placeholderRect = piece.parentElement.getBoundingClientRect(); 
+                        const finalTop = boardRect.top + window.scrollY + parseFloat(piece.dataset.correctTop); 
+                        const finalLeft = boardRect.left + window.scrollX + parseFloat(piece.dataset.correctLeft); 
+                        document.body.appendChild(piece); 
+                        piece.style.position = 'fixed'; 
+                        piece.style.top = `${placeholderRect.top}px`; 
+                        piece.style.left = `${placeholderRect.left}px`; 
+                        
+                        setTimeout(() => { 
+                            piece.classList.add('is-flying'); 
+                            piece.style.top = `${finalTop - window.scrollY}px`; 
+                            piece.style.left = `${finalLeft - window.scrollX}px`; 
+                            piece.style.transform = 'rotate(360deg) scale(1)'; 
+                        }, 20); 
+                        
+                        setTimeout(() => { 
+                            piece.classList.remove('is-flying'); 
+                            piece.classList.add('placed'); 
+                            board.appendChild(piece); 
+                            piece.style.position = 'absolute'; 
+                            piece.style.top = `${piece.dataset.correctTop}px`; 
+                            piece.style.left = `${piece.dataset.correctLeft}px`; 
+                            piece.style.transform = 'none'; 
+                        }, 1200); 
+                        
+                        piece.style.pointerEvents = 'none'; 
+                        piecesPlaced++; 
+                        
+                        if (piecesPlaced === ROWS * COLS) { 
+                            setTimeout(() => { 
+                                document.getElementById('puzzle-complete-message').classList.add('show'); 
                                 startCelebration();
-                                board.style.cursor = 'pointer';
-                                board.addEventListener('click', openSlideshow, { once: true });
-                            }, 1300);
-                        }
-                    }, { once: true });
+                                showDancingAnimals();
+                                board.style.cursor = 'pointer'; 
+                                board.addEventListener('click', openSlideshow, { once: true }); 
+                            }, 1300); 
+                        } 
+                    }, { once: true }); 
                 });
             }
         });
