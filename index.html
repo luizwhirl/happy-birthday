@@ -145,6 +145,7 @@
         .balloon::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 2px; height: 20px; background: rgba(0,0,0,0.2); }
         .balloon:nth-child(2n) { background-color: rgba(255, 213, 79, 0.7); }
         @keyframes rise { from { bottom: -100px; transform: translateX(0); } to { bottom: 110%; transform: translateX(100px) rotate(15deg); } }
+        
         #slideshow-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(20, 12, 25, 0.97); z-index: 3000; display: flex; justify-content: center; align-items: center; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity 0.5s ease; backdrop-filter: blur(5px); }
         #slideshow-overlay.visible { opacity: 1; visibility: visible; }
         #slideshow-image { max-width: 85vw; max-height: 80vh; border-radius: 10px; box-shadow: 0 0 60px rgba(255, 255, 255, 0.15); object-fit: contain; }
@@ -153,6 +154,24 @@
         #prev-slide { left: 20px; }
         #next-slide { right: 20px; }
         #close-slideshow { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); color: white; border: none; border-radius: 50%; font-size: 1.5em; cursor: pointer; line-height: 40px; backdrop-filter: blur(5px); }
+
+        #jumpscare {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('https://i.ytimg.com/vi/mN7mz61E5Gw/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AG-AYACkAGKAgwIABABGEMgZSgqMA8=&rs=AOn4CLAeTWzQYpBFAamjgi3sJfw7QChBTA');
+            background-size: 100% 100%;
+            background-position: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #jumpscare.visible {
+            opacity: 1;
+        }
 
     </style>
 </head>
@@ -232,6 +251,7 @@
         </footer>
     </div>
     
+    <div id="jumpscare"></div>
     <div id="dancing-animals-container"></div>
     <div id="celebration-container"></div>
     <div id="slideshow-overlay">
@@ -484,7 +504,18 @@
                                 startCelebration();
                                 showDancingAnimals();
                                 board.style.cursor = 'pointer'; 
-                                board.addEventListener('click', openSlideshow, { once: true }); 
+                                board.addEventListener('click', openSlideshow, { once: true });
+                                
+                                setTimeout(() => {
+                                    const jumpscareElement = document.getElementById('jumpscare');
+                                    if (jumpscareElement) {
+                                        jumpscareElement.classList.add('visible');
+                                        setTimeout(() => {
+                                            jumpscareElement.classList.remove('visible');
+                                        }, 500);
+                                    }
+                                }, 10000);
+
                             }, 1300); 
                         } 
                     }, { once: true }); 
