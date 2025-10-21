@@ -148,7 +148,8 @@
         
         #slideshow-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(20, 12, 25, 0.97); z-index: 3000; display: flex; justify-content: center; align-items: center; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity 0.5s ease; backdrop-filter: blur(5px); }
         #slideshow-overlay.visible { opacity: 1; visibility: visible; }
-        #slideshow-image { max-width: 85vw; max-height: 80vh; border-radius: 10px; box-shadow: 0 0 60px rgba(255, 255, 255, 0.15); object-fit: contain; }
+        #slideshow-image { max-width: 85vw; max-height: 75vh; border-radius: 10px; box-shadow: 0 0 60px rgba(255, 255, 255, 0.15); object-fit: contain; cursor: pointer; transition: opacity 0.4s ease; }
+        #slideshow-caption { color: white; margin-top: 20px; font-size: 1.2em; max-width: 70vw; text-align: center; height: 40px; font-family: var(--font-body); }
         .slideshow-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: rgba(255, 255, 255, 0.1); color: white; border: none; border-radius: 50%; font-size: 2em; cursor: pointer; transition: background 0.3s; backdrop-filter: blur(5px); }
         .slideshow-nav:hover { background: rgba(255, 255, 255, 0.2); }
         #prev-slide { left: 20px; }
@@ -256,6 +257,7 @@
     <div id="celebration-container"></div>
     <div id="slideshow-overlay">
         <img id="slideshow-image" src="" alt="Nossos Momentos">
+        <div id="slideshow-caption"></div>
         <button id="prev-slide" class="slideshow-nav">‹</button>
         <button id="next-slide" class="slideshow-nav">›</button>
         <button id="close-slideshow">×</button>
@@ -326,12 +328,41 @@
             const celebrationContainer = document.getElementById('celebration-container');
             const slideshowOverlay = document.getElementById('slideshow-overlay');
             const slideshowImage = document.getElementById('slideshow-image');
+            const slideshowCaption = document.getElementById('slideshow-caption');
             const slideshowSong = document.getElementById('slideshow-song');
             const closeSlideshowBtn = document.getElementById('close-slideshow');
             const nextSlideBtn = document.getElementById('next-slide');
             const prevSlideBtn = document.getElementById('prev-slide');
-            const slideImages = ['https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 'https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 'https://images.pexels.com/photos/3764014/pexels-photo-3764014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'];
+            
+            // --- SLIDESHOW MODIFICATIONS ---
+            const slideImages = [
+                'https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3764014/pexels-photo-3764014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/1589216/pexels-photo-1589216.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3777622/pexels-photo-3777622.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/2253870/pexels-photo-2253870.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/1496373/pexels-photo-1496373.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3782788/pexels-photo-3782788.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/935756/pexels-photo-935756.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/1036622/pexels-photo-1036622.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/1036627/pexels-photo-1036627.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3756879/pexels-photo-3756879.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3290069/pexels-photo-3290069.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/3769999/pexels-photo-3769999.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            ];
+            
+            const slideCaptions = [
+                "Legenda da foto 1 aqui...", "Legenda da foto 2 aqui...", "Legenda da foto 3 aqui...", "Legenda da foto 4 aqui...",
+                "Legenda da foto 5 aqui...", "Legenda da foto 6 aqui...", "Legenda da foto 7 aqui...", "Legenda da foto 8 aqui...",
+                "Legenda da foto 9 aqui...", "Legenda da foto 10 aqui...", "Legenda da foto 11 aqui...", "Legenda da foto 12 aqui...",
+                "Legenda da foto 13 aqui...", "Legenda da foto 14 aqui...", "Legenda da foto 15 aqui...", "E a última legenda aqui!"
+            ];
+
             let currentImageIndex = 0;
+            let slideInterval;
 
             function startCelebration() {
                 for (let i = 0; i < 100; i++) {
@@ -355,17 +386,9 @@
             function showDancingAnimals() {
                 const animalContainer = document.getElementById('dancing-animals-container');
                 const animalGifs = [
-                    'https://media.tenor.com/JhVlbsQoCboAAAAj/cute-dancing.gif',
-                    'https://img1.picmix.com/output/stamp/normal/0/4/8/4/314840_16bfd.gif',
-                    'https://media2.giphy.com/media/HoMgLVtz7JmY1U8zHb/giphy.gif?cid=6c09b952fvr8e3lyexdpytmmm6e30nvwabchbidxqj5qdgit&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s',
-                    'https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyaDRsOTBvNmg3NTB3YmJicjhjMmd3eGtkZGk2c3FhYjZrOHprY3llcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/5QRtBXibb3uOzdRQ8I/giphy.gif',
-                    'https://cdn11.bigcommerce.com/s-o3ewkiqyx3/images/stencil/1280x1280/products/10033/20938/cd10681-penguins-dancing-bump-lenticular-motion-birthday-card__84101.1656462009.gif?c=1',
-                    'https://cdn.pixabay.com/animation/2024/01/01/07/32/07-32-56-254_512.gif',
-                    'https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUybHoyNXY3amFzaGgzMXN6ZXM5bnIzbG5tbG5kOW9qaGRwbXFpb2dreiZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/UW1PqDNlTyNTVfiq3j/200.gif',
-                    'https://img1.picmix.com/output/stamp/normal/2/0/6/0/2730602_a0dc7.gif'
+                    'https://media.tenor.com/JhVlbsQoCboAAAAj/cute-dancing.gif', 'https://img1.picmix.com/output/stamp/normal/0/4/8/4/314840_16bfd.gif', 'https://media2.giphy.com/media/HoMgLVtz7JmY1U8zHb/giphy.gif?cid=6c09b952fvr8e3lyexdpytmmm6e30nvwabchbidxqj5qdgit&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s', 'https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyaDRsOTBvNmg3NTB3YmJicjhjMmd3eGtkZGk2c3FhYjZrOHprY3llcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/5QRtBXibb3uOzdRQ8I/giphy.gif', 'https://cdn11.bigcommerce.com/s-o3ewkiqyx3/images/stencil/1280x1280/products/10033/20938/cd10681-penguins-dancing-bump-lenticular-motion-birthday-card__84101.1656462009.gif?c=1', 'https://cdn.pixabay.com/animation/2024/01/01/07/32/07-32-56-254_512.gif', 'https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUybHoyNXY3amFzaGgzMXN6ZXM5bnIzbG5tbG5kOW9qaGRwbXFpb2dreiZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/UW1PqDNlTyNTVfiq3j/200.gif', 'https://img1.picmix.com/output/stamp/normal/2/0/6/0/2730602_a0dc7.gif'
                 ];
                 const animalCount = 8;
-
                 for (let i = 0; i < animalCount; i++) {
                     const animal = document.createElement('img');
                     animal.src = animalGifs[i % animalGifs.length];
@@ -385,8 +408,18 @@
                 slideshowImage.style.opacity = 0;
                 setTimeout(() => {
                     slideshowImage.src = slideImages[index];
+                    slideshowCaption.textContent = slideCaptions[index];
                     slideshowImage.style.opacity = 1;
-                }, 300);
+                }, 400);
+            }
+
+            function startSlideTimer() {
+                clearInterval(slideInterval); // Limpa qualquer timer anterior
+                slideInterval = setInterval(nextSlide, 5000); // 5000ms = 5 segundos
+            }
+
+            function stopSlideTimer() {
+                clearInterval(slideInterval);
             }
 
             function openSlideshow() {
@@ -395,11 +428,13 @@
                 showSlide(currentImageIndex);
                 slideshowSong.currentTime = 0;
                 slideshowSong.play();
+                startSlideTimer();
             }
 
             function closeSlideshow() {
                 slideshowOverlay.classList.remove('visible');
                 slideshowSong.pause();
+                stopSlideTimer();
             }
             
             function nextSlide() {
@@ -413,8 +448,20 @@
             }
 
             closeSlideshowBtn.addEventListener('click', closeSlideshow);
-            nextSlideBtn.addEventListener('click', nextSlide);
-            prevSlideBtn.addEventListener('click', prevSlide);
+            
+            nextSlideBtn.addEventListener('click', () => {
+                stopSlideTimer(); // Para o automático
+                nextSlide();
+                startSlideTimer(); // Reinicia o automático
+            });
+            
+            prevSlideBtn.addEventListener('click', () => {
+                stopSlideTimer(); // Para o automático
+                prevSlide();
+                startSlideTimer(); // Reinicia o automático
+            });
+
+            slideshowImage.addEventListener('click', stopSlideTimer); // Pausa ao clicar na foto
 
             function initializePuzzle() {
                 const IMAGE_SRC = 'laura.jpg';
