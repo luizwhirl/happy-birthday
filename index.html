@@ -47,40 +47,114 @@
         #start-button { padding: 18px 40px; font-size: 1.3em; font-weight: 600; color: #fff; background: linear-gradient(45deg, var(--primary-color), #ff8a80); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 0 35px var(--primary-glow); animation: pulse-glow 2.5s infinite; transition: transform 0.3s ease; }
         #start-button:hover { transform: scale(1.08); }
         
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; text-align: center; position: relative; z-index: 10; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 15px; text-align: center; position: relative; z-index: 10; }
         .fade-in-section { opacity: 0; transform: translateY(40px); transition: opacity 1s ease-out, transform 1s ease-out; }
         .fade-in-section.visible { opacity: 1; transform: translateY(0); }
         h1, h2 { font-family: var(--font-heading); }
-        h1 { font-size: 4.5em; color: var(--primary-color); text-shadow: 2px 2px 15px var(--shadow-soft); }
+        h1 { font-size: 4.5em; color: var(--primary-color); text-shadow: 2px 2px 15px var(--shadow-soft); margin-top: 20px; margin-bottom: 20px; }
         h2 { font-size: 3em; color: var(--text-color); margin-top: 100px; margin-bottom: 20px; position: relative; display: inline-block; }
         h2::after { content: ''; display: block; width: 60%; height: 3px; background: var(--primary-color); margin: 10px auto 0; border-radius: 2px; opacity: 0.6; }
 
         .photo-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 30px; align-items: center; }
-        .photo-card { border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px var(--shadow-medium); transition: transform 0.4s ease, box-shadow 0.4s ease; }
+        .photo-card { 
+            position: relative; /* Adicionado para a animação de coração */
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px var(--shadow-medium); 
+            transition: transform 0.4s ease, box-shadow 0.4s ease; 
+        }
         .photo-card:hover { transform: scale(1.05) translateY(-10px); box-shadow: 0 20px 40px var(--shadow-medium); }
         .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
         
+        /* --- NOVA ANIMAÇÃO DE CORAÇÃO --- */
+        #spidey-photo-card .hearts-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .heart {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            opacity: 0;
+            background-color: var(--primary-color);
+            transform: translateX(-50%) rotate(45deg);
+            animation: float-heart 4s infinite;
+        }
+        .heart::before, .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+        .heart::before { top: -10px; left: 0; }
+        .heart::after { top: 0; left: -10px; }
+        
+        /* Stagger das animações */
+        #spidey-photo-card .heart:nth-child(1) { animation-delay: 0s; animation-duration: 3s; left: 40%; --tx: -20px; }
+        #spidey-photo-card .heart:nth-child(2) { animation-delay: 0.5s; animation-duration: 4s; left: 60%; --tx: 30px; }
+        #spidey-photo-card .heart:nth-child(3) { animation-delay: 1s; animation-duration: 3.5s; left: 50%; --tx: 10px; }
+        #spidey-photo-card .heart:nth-child(4) { animation-delay: 1.5s; animation-duration: 4.5s; left: 45%; --tx: -15px; }
+        #spidey-photo-card .heart:nth-child(5) { animation-delay: 2s; animation-duration: 3s; left: 55%; --tx: 25px; }
+
+        @keyframes float-heart {
+            0% {
+                bottom: 20px;
+                opacity: 1;
+                transform: translateX(-50%) rotate(45deg) scale(0.8);
+            }
+            100% {
+                bottom: 110%;
+                opacity: 0;
+                transform: translateX(calc(-50% + var(--tx, 0px))) rotate(45deg) scale(1.3);
+            }
+        }
+        /* --- FIM DA ANIMAÇÃO DE CORAÇÃO --- */
+
         .music-player {
-            margin-top: 40px;
+            margin: 40px auto 0; /* Centralizado e modificado */
             background: rgba(255, 255, 255, 0.6);
             border-radius: 20px;
             box-shadow: 0 8px 32px 0 var(--shadow-soft);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.18);
-            display: inline-block;
+            display: block; /* Modificado */
+            width: 100%; /* Modificado */
+            max-width: 400px; /* Modificado */
             padding: 20px;
         }
 
         .music-player iframe {
             border-radius: 12px;
             border: none;
+            width: 100%; /* Garantido */
         }
         
         footer { margin-top: 100px; font-family: var(--font-heading); font-size: 2.2em; color: var(--primary-color); opacity: 0.8; }
 
         .puzzle-piece-placeholder { display: block; margin: 40px auto; width: 120px; height: 120px; position: relative; }
-        #puzzle-board { position: relative; border-radius: 15px; background-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 25px var(--shadow-soft), inset 0 0 10px rgba(255,255,255,0.7); margin: 30px auto 0; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        
+        /* Otimização do Puzzle Board */
+        #puzzle-board { 
+            position: relative; 
+            border-radius: 15px; 
+            background-color: rgba(255, 255, 255, 0.4); 
+            box-shadow: 0 0 25px var(--shadow-soft), inset 0 0 10px rgba(255,255,255,0.7); 
+            margin: 30px auto 0; 
+            backdrop-filter: blur(5px); 
+            -webkit-backdrop-filter: blur(5px);
+            width: 90vw; /* Responsivo */
+            max-width: 400px; /* Tamanho máximo */
+            aspect-ratio: 1 / 1; /* Mantém quadrado */
+        }
+
         .puzzle-piece { position: absolute; background-image: url('laura.jpg'); filter: drop-shadow(0 5px 15px var(--shadow-medium)); cursor: pointer; overflow: visible; transition: top 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55), transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
         .pulsing { animation: pulse-glow 2.5s infinite ease-in-out; }
         @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 5px 15px var(--shadow-medium)) drop-shadow(0 0 5px var(--primary-glow)); } 50% { filter: drop-shadow(0 8px 25px var(--shadow-medium)) drop-shadow(0 0 20px var(--primary-glow)); } }
@@ -119,6 +193,8 @@
         }
 
         #puzzle-complete-message small { font-size: 0.5em; font-family: var(--font-body); font-weight: 600; opacity: 0.8; }
+        
+        /* Otimização da Timeline */
         .timeline-container { width: 100%; position: relative; padding: 50px 0; }
         .timeline-container::before { content: ''; position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 100%; height: 4px; background: linear-gradient(90deg, transparent, var(--primary-color), transparent); opacity: 0.4; }
         .timeline { display: flex; justify-content: space-around; position: relative; }
@@ -169,9 +245,66 @@
             opacity: 0;
             pointer-events: none;
         }
+        #jumpscare.visible { opacity: 1; }
 
-        #jumpscare.visible {
-            opacity: 1;
+        /* --- MEDIA QUERIES PARA CELULAR --- */
+        
+        @media (max-width: 768px) {
+            /* Ajusta a timeline para vertical */
+            .timeline { 
+                flex-direction: column; 
+                align-items: center; 
+                gap: 20px; 
+            }
+            .timeline-container::before {
+                left: 50%; 
+                top: 0; 
+                width: 4px; 
+                height: 100%;
+                transform: translateX(-50%);
+                background: linear-gradient(180deg, transparent, var(--primary-color), transparent);
+            }
+            .timeline-event {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+            .timeline-content {
+                position: relative; /* Remove o 'absolute' */
+                bottom: auto;
+                top: auto; 
+                width: 90%; 
+                max-width: 300px;
+                margin-top: 15px; /* Espaço do ponto */
+                opacity: 0; /* JS ainda controla a visibilidade */
+                visibility: hidden;
+                transform: translateY(10px) scale(0.95);
+            }
+            .timeline-event:nth-child(even) .timeline-content {
+                top: auto; /* Reseta o 'top' alternado */
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.8em; }
+            h2 { font-size: 2.2em; }
+            footer { font-size: 1.8em; }
+            p { font-size: 1em; }
+            
+            #puzzle-complete-message { font-size: 2em; }
+
+            /* Ajustes no Slideshow */
+            .slideshow-nav { width: 45px; height: 45px; font-size: 1.8em; }
+            #prev-slide { left: 10px; }
+            #next-slide { right: 10px; }
+            #close-slideshow { top: 15px; right: 15px; }
+            #slideshow-caption { 
+                font-size: 1em; 
+                max-width: 85vw; 
+                height: auto; /* Permite quebra de linha */
+                min-height: 40px;
+            }
         }
 
     </style>
@@ -224,8 +357,18 @@
             <div class="photo-gallery">
                 <div class="photo-card"><img src="fumano.jpg" alt="ahbumt"></div>
                 <div class="photo-card"><img src="noisi1.jpg" alt="hdasgfjty"></div>
-                <div class="photo-card"><img src="spidufghsdiuf.jpg" alt="eyjfg"></div>
-            </div>
+                
+                <div class="photo-card" id="spidey-photo-card">
+                    <img src="spidufghsdiuf.jpg" alt="eyjfg">
+                    <div class="hearts-container">
+                        <div class="heart"></div>
+                        <div class="heart"></div>
+                        <div class="heart"></div>
+                        <div class="heart"></div>
+                        <div class="heart"></div>
+                    </div>
+                </div>
+                </div>
             <div class="puzzle-piece-placeholder"></div>
             <div class="puzzle-piece-placeholder"></div>
             <div class="puzzle-piece-placeholder"></div>
@@ -309,7 +452,7 @@
                         observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.15 });
+            }, { threshold: 0.1 }); // Limiar menor para carregar em telas menores
             sections.forEach(section => observer.observe(section));
 
             const timelinePoints = document.querySelectorAll('.timeline-point');
@@ -334,7 +477,7 @@
             const nextSlideBtn = document.getElementById('next-slide');
             const prevSlideBtn = document.getElementById('prev-slide');
             
-            // --- SLIDESHOW MODIFICATIONS ---
+            // --- ATUALIZAÇÃO DO SLIDESHOW ---
             const slideImages = [
                 'nhec.jpg',
                 'coracao.jpg',
@@ -351,15 +494,18 @@
                 'lindjo.jpg',
                 'zap.png',
                 'ebaa.png',
-                'uosto.jpg'
+                'uosto.jpg',
+                'jornal-laura.jpg' // <-- IMAGEM ADICIONADA
             ];
             
             const slideCaptions = [
                 "A primeira de muitas vezes onde nós estivemos virando a noite na rua, fazendo nada", "Sua caixinha bobinha sendo feita de papelão. Sabia que eu amei muito fazer isso à mão pra você?", "A bagunça é enorme", "Mas é totalmente pra você, meu amor!",
                 "Tudo que eu tenho aqui, é tudo para você. Para essa mulher linda, que eu amo tanto", "Amo você,minha menininha linda, do cabelinho fofinho.", "Amo a pessoinha que você é, amo o seu jeitinho, amo teu corpo, amo cada pedacinho seu", "Amo, e continuarei amando tudo que significar ser você, para sempre",
                 "Sair com você, em qualquer momento, é sempre uma felicidade absoluta.", "Amo quando sua maravilhosa mente criativa tira uma foto minha que me faz me sentir melhor; bem comigo mesmo.", "Até mesmo as mais esquisitas", "Amo estar contigo até mesmo nos momentos em que minhas ideias menos sãs me vêm à",
-                "O mundo torna-se mais lindo com você", "Você é totalmente maluca, você não gira bem minha menininha.", "Mas ainda assim, você é minha maluquinha, e eu te amo muito por fazer parte dessa história ", "Amo estar contigo, em qualquer momento, em qualquer lugar. Sou todo seu, e quero sempre poder ser seu porto seguro. Eu te amo, Laura."
+                "O mundo torna-se mais lindo com você", "Você é totalmente maluca, você não gira bem minha menininha.", "Mas ainda assim, você é minha maluquinha, e eu te amo muito por fazer parte dessa história ", "Amo estar contigo, em qualquer momento, em qualquer lugar. Sou todo seu, e quero sempre poder ser seu porto seguro. Eu te amo, Laura.",
+                "E para todas as matérias que ainda vamos escrever... Feliz aniversário! Eu te amo." // <-- LEGENDA ADICIONADA
             ];
+            // --- FIM DA ATUALIZAÇÃO DO SLIDESHOW ---
 
             let currentImageIndex = 0;
             let slideInterval;
@@ -463,19 +609,28 @@
 
             slideshowImage.addEventListener('click', stopSlideTimer); // Pausa ao clicar na foto
 
+            // --- ATUALIZAÇÃO DO QUEBRA-CABEÇA ---
             function initializePuzzle() {
                 const IMAGE_SRC = 'laura.jpg';
-                const PUZZLE_SIZE = 400;
+                // const PUZZLE_SIZE = 400; // REMOVIDO
                 const ROWS = 4;
                 const COLS = 4;
                 const board = document.getElementById('puzzle-board');
                 const placeholders = document.querySelectorAll('.puzzle-piece-placeholder');
+
+                // NOVO: Pega o tamanho do 'board' a partir do CSS
+                // O CSS define max-width: 400px e width: 90vw
+                const PUZZLE_SIZE = board.clientWidth; 
+                
+                // O CSS 'aspect-ratio: 1/1' deve cuidar disso, mas vamos garantir
+                board.style.height = `${PUZZLE_SIZE}px`; 
+
                 const pieceWidth = PUZZLE_SIZE / COLS;
                 const pieceHeight = PUZZLE_SIZE / ROWS;
                 let piecesPlaced = 0;
                 let pieceElements = [];
-                board.style.width = `${PUZZLE_SIZE}px`;
-                board.style.height = `${PUZZLE_SIZE}px`;
+                
+                // REMOVIDO: board.style.width e board.style.height (agora no CSS)
 
                 for (let r = 0; r < ROWS; r++) { 
                     for (let c = 0; c < COLS; c++) { 
@@ -504,6 +659,7 @@
                 placeholders.forEach((placeholder, index) => { 
                     if (pieceElements[index]) { 
                         const piece = pieceElements[index]; 
+                        // Ajusta o placeholder para o tamanho da peça
                         placeholder.style.width = `${pieceWidth}px`; 
                         placeholder.style.height = `${pieceHeight}px`; 
                         placeholder.appendChild(piece); 
